@@ -157,7 +157,6 @@ Void dtask_tcp_echo(UArg arg0, UArg arg1)
     int                optval;
     int                optlen = sizeof(optval);
     socklen_t          addrlen = sizeof(clientAddr);
-    //struct 			   timeval to;  /* Timeouts */
     Task_Handle        taskHandle;
     Task_Params        taskParams;
     Error_Block        eb;
@@ -207,15 +206,6 @@ Void dtask_tcp_echo(UArg arg0, UArg arg1)
 		System_printf("Error: setsockopt failed\n");
 		goto ABORT;
 	}
-
-	// Configuramos el timeout del socket a 30 segundos y 0 microsegundos
-//	to.tv_sec = 30;
-//	to.tv_usec = 0;
-//	if( setsockopt( s, SOL_SOCKET, SO_SNDTIMEO, &to, sizeof(to)) < 0 ||
-//		setsockopt( s, SOL_SOCKET, SO_RCVTIMEO, &to, sizeof(to)) < 0) {
-//		System_printf("Error: setsockopt failed\n");
-//		goto ABORT;
-//	}
 
     while ((clientfd =
             accept(server, (struct sockaddr *)&clientAddr, &addrlen)) != -1) {

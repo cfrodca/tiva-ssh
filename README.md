@@ -7,6 +7,6 @@ SSH (shell) server for TI-RTOS v2
 - YaSSH v0.0.2
 - Win-SSHD    https://github.com/saju/win-sshd
 
-CAUTION - Use a real sshd in production!
+Use a real sshd in production!
 
 Supports shell channel only

@@ -22,11 +22,11 @@
 #include "console.h"
 
 #define LASTLOGIN_STR		"Last login: "	// Tue Mar 20 23:00:01 2007 from XXX.XXX.XXX.XXX
-#define WELCOME_STR			"Welcome to TirtosSSH!!!\r\n\r\n\t* To display a list of commands type ?\r\n"
-#define PROMPT_STR			"@tirtos$ "		// Antes del @ se adiciona el usuario que está conectado
+#define WELCOME_STR		"Welcome to TirtosSSH!!!\r\n\r\n\t* To display a list of commands type ?\r\n"
+#define PROMPT_STR		"@tirtos$ "		
 
-#define USERNAME			"admin"
-#define PASSWORD			"admin"
+#define USERNAME		"admin"
+#define PASSWORD		"admin"
 
 static int parse_echo(SSH *);
 

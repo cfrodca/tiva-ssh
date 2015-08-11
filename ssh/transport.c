@@ -171,7 +171,6 @@ int transportGetPacket(SSH *ssh) {
 	byte *tmp;
 	int remain;
 	Error_Block eb;
-	int ret = 0;
 
 	sp = &ssh->sp;
 	p = ssh->PacketBuffer;
@@ -186,8 +185,7 @@ int transportGetPacket(SSH *ssh) {
 
 	/* Read valid? */
 	if (ssh->Length <= 0) {
-		ret = -1;
-		goto ABORT;
+		return -1;
 	}
 
 	/* Decrypt */
@@ -209,8 +207,8 @@ int transportGetPacket(SSH *ssh) {
 		/* Bad packet */
 		if (sp->packet_length
 				> TCPPACKETSIZE - sizeof(word32) - SHA_DIGEST_SIZE) {
-			ret = -1;
-			goto ABORT;
+			Memory_free(NULL, tmp, TCPPACKETSIZE);
+			return -1;
 		}
 
 		/* How much remain to read, including mac */
@@ -232,9 +230,8 @@ int transportGetPacket(SSH *ssh) {
 		memcpy(tmp + sp->packet_length + sizeof(word32),
 				p + sp->packet_length + sizeof(word32), SHA_DIGEST_SIZE);
 		memcpy(p, tmp, sp->packet_length + sizeof(word32) + SHA_DIGEST_SIZE);
-ABORT:
-		if (tmp)
-			Memory_free(NULL, tmp, TCPPACKETSIZE);
+
+		Memory_free(NULL, tmp, TCPPACKETSIZE);
 	} else {
 		/* Plain packet */
 		sp->packet_length = (word32) ntohl(*(word32* )p);
@@ -257,7 +254,7 @@ ABORT:
 		}
 	}
 
-	return ret;
+	return 0;
 }
 
 /**

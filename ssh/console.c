@@ -119,9 +119,16 @@ static int parse_echo(SSH *ssh) {
 	/* Read input */
 	read_bin(&p, &out, &tmpSz);
 
-	/* Copy input data */
-	memcpy(buf + idx, out, tmpSz);
-	idx += tmpSz;
+	if ((idx + tmpSz) < sizeof(buf) - 1) {
+		/* Copy input data */
+		memcpy(buf + idx, out, tmpSz);
+		idx += tmpSz;
+	} else {
+		/* too much data*/
+		buf[0] = '\r';
+		buf[1] = 0;
+		return 1;
+	}
 
 	/* Return on CR */
 	if (out[tmpSz - 1] == '\n' || out[tmpSz - 1] == '\r') {

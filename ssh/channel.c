@@ -117,7 +117,7 @@ static int parse_chrequest(SSH *ssh) {
 	word32 num;
 
 	/* Verify if the channel is open or the session is pty */
-	if (ssh->state != SSH_CHOPEN && ssh->state != SSH_PTY) {
+	if (ssh->state != SSH_CHOPEN && ssh->state != SSH_PTY && ssh->state != SSH_SHELL) {
 		return -1;
 	}
 
@@ -160,7 +160,7 @@ static int parse_chrequest(SSH *ssh) {
 	} else if (memcmp(out, EXITSIGNAL_STR, strlen(EXITSIGNAL_STR)) == 0) {
 		return 1;
 	} else {
-		return -1;
+		return 1;
 	}
 }
 

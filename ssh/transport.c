@@ -27,7 +27,6 @@
 #include "channel.h"
 #include "console.h"
 
-#define SSH_PROT_VERSION 		"SSH-2.0-TIVA"
 #define AUTH_SERVICE        	"ssh-userauth"
 
 /* Main functions */

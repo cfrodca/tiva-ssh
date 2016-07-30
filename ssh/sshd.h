@@ -19,19 +19,22 @@
 
 #define TCPPACKETSIZE 	2048		/* Length for read/write sockets operations */
 
+#define ENC_FLAG		0x01
+#define RE_EXCH_FLAG		0x02
+
 /* Constantes varias */
 typedef enum {
 	MAX_VERSION		= 128,
 	MIN_VERSION		= 7,
-	MAX_MAC      	= 20,
+	MAX_MAC      		= 20,
 	COOKIE_SIZE		= 16,
-	MAX_PADDING 	= 255,
-	MIN_PADDING 	= 8,
+	MAX_PADDING 		= 255,
+	MIN_PADDING 		= 8,
 	SIGN_SIZE		= 40
 } Misc;
 
 typedef enum {
-	DH_GROUP_IND 	= 0,
+	DH_GROUP_IND 		= 0,
 	HOST_KEY_IND,
 	ENC_C2S_IND,
 	ENC_S2C_IND,
@@ -77,22 +80,27 @@ typedef struct {
 	char in_addr[16];		/* Client IP address */
 	char authAtt;			/* Auth tries */
 
+	char V_C[MAX_VERSION + 1];	/* SSH client version */
+
 	char* namelist[TOTAL_NAMELIST];
 
-	byte *PacketBuffer; 	/* Buffer read/write sockets */
+	byte *PacketBuffer; 		/* Buffer read/write sockets */
 	int Length; 			/* Number of bytes read/write */
 	ssh_packet sp;			/* SSH fields */
 
-	DhKey dh;				/* DH selected */
+	DhKey dh;			/* DH selected */
 	byte K[257];			/* Shared secret */
 	byte f[257];			/* f = g^y mod p */
-	word32 KSz;				/* Size KSz */
-	word32 fSz;				/* Size f */
+	word32 KSz;			/* Size KSz */
+	word32 fSz;			/* Size f */
 
 	Aes enc;
 	Aes dec;
 	Hmac hmacV;
 	Hmac hmacB;
+
+	Aes encBk;
+	Hmac hmacBBk;
 
 	byte flEnc;				/* Flag is this session encrypted */
 	int in_sequence;  		/* The mac sequence for the incoming stream */	// YA

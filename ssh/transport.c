@@ -37,6 +37,7 @@ static int transportVerifyMAC(SSH *);
 static int transportBuildMAC(SSH *);
 static int build_ver_response(SSH *);
 static int parse_ver(SSH *);
+static int close_hd(SSH *ssh);
 
 /**
  * @brief Init sha and dh keys
@@ -299,15 +300,18 @@ int transportProcessPacket(SSH *ssh) {
 
 	switch (ssh->sp.type) {
 
-		case SSH_MSG_CHANNEL_CLOSE:
 		/* Transport layer protocol */
 		case SSH_MSG_DISCONNECT:
 		case SSH_MSG_UNIMPLEMENTED:
 			return 1;
 
+		case SSH_MSG_CHANNEL_CLOSE:
+		case SSH_MSG_CHANNEL_EOF:
+			close_hd(ssh);
+			return 1;
+
 		case SSH_MSG_IGNORE:
 		case SSH_MSG_DEBUG:
-		case SSH_MSG_CHANNEL_EOF:
 		case SSH_MSG_CHANNEL_WINDOW_ADJUST:
 			return 0;
 
@@ -458,6 +462,27 @@ static int build_service_response(SSH *ssh) {
 
 	packet_finalize(ssh); /* agregamos el padding */
 
+	return 0;
+}
+
+static int close_hd(SSH *ssh) {
+	byte *p;
+	
+	p = ssh->PacketBuffer;
+	memset(p, 0, TCPPACKETSIZE);
+
+	packet_begin(&p, SSH_MSG_CHANNEL_CLOSE);
+	packet_add_uint32(&p, ssh->rec_num);
+	
+	ssh->Length = (p - ssh->PacketBuffer);				// Partial length
+	
+	packet_finalize(ssh);						// Encrypt
+	
+	/* Send reply to client */
+	if (transportWritePacket(ssh) < 0) {				// Send
+		return -1;
+	}
+	
 	return 0;
 }
 

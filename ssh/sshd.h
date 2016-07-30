@@ -19,9 +19,6 @@
 
 #define TCPPACKETSIZE 	2048		/* Length for read/write sockets operations */
 
-#define ENC_FLAG		0x01
-#define RE_EXCH_FLAG		0x02
-
 /* Constantes varias */
 typedef enum {
 	MAX_VERSION		= 128,
@@ -98,9 +95,6 @@ typedef struct {
 	Aes dec;
 	Hmac hmacV;
 	Hmac hmacB;
-
-	Aes encBk;
-	Hmac hmacBBk;
 
 	byte flEnc;				/* Flag is this session encrypted */
 	int in_sequence;  		/* The mac sequence for the incoming stream */	// YA

@@ -397,7 +397,7 @@ static int parse_ver(SSH *ssh) {
 	}
 
 	verSz = p - ssh->PacketBuffer;
-	if (verSz < MIN_VERSION || verSz > MAX_VERSION) {
+	if (verSz < MIN_VERSION || verSz >= MAX_VERSION) {
 		return -1;
 	}
 	p = ssh->PacketBuffer;
@@ -407,11 +407,9 @@ static int parse_ver(SSH *ssh) {
 		return -1;
 	}
 
-	/* Add V_C to sha */
-	UpdateHash(sha, p, verSz);
-	/* Add V_S to sha */
-	UpdateHash(sha, SSH_PROT_VERSION, strlen(SSH_PROT_VERSION));
-
+	memcpy(ssh->V_C, p, verSz);
+	ssh->V_C[verSz] = 0;
+	
 	ssh->in_sequence = -1;
 	ssh->out_sequence = -1;
 

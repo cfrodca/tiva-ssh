@@ -103,16 +103,16 @@ int kexdh_hd(SSH *ssh) {
  */
 int kexnewk_hd(SSH *ssh) {
 
-	/* Compute encrypt/decrypt and hmac keys */
-	if (build_newk(ssh) < 0) {
-		return -1;
-	}
-
 	/* Build new keys reply  */
 	build_newk_response(ssh);
 
 	/* Send reply to client */
 	if (transportWritePacket(ssh) < 0) {
+		return -1;
+	}
+
+	/* Compute encrypt/decrypt and hmac keys */
+	if (build_newk(ssh) < 0) {
 		return -1;
 	}
 
@@ -218,6 +218,12 @@ static int parse_kexinit(SSH *ssh) {
 
 	/* Load prime numbers */
 	DhSetKey(dh, (byte*) p, size, group1_g, sizeof(group1_g));
+
+	/* Add V_C to sha */
+	UpdateHash(sha, (const byte *) ssh->V_C, strlen(ssh->V_C));
+
+	/* Add V_S to sha */
+	UpdateHash(sha, SSH_PROT_VERSION, strlen(SSH_PROT_VERSION));
 
 	/* Add I_C to sha */
 	UpdateHash(sha, payload, ssh->sp.payload_length);

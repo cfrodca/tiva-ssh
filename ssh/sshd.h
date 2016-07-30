@@ -19,6 +19,8 @@
 
 #define TCPPACKETSIZE 	2048		/* Length for read/write sockets operations */
 
+#define SSH_PROT_VERSION 		"SSH-2.0-TIVA"
+
 /* Constantes varias */
 typedef enum {
 	MAX_VERSION		= 128,
